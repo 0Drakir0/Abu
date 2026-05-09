@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Una Petición del Corazón — Abuelita</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ivory: #FAF6EE;
+  --ivory-dark: #F0E8D8;
+  --parchment: #E8D8B8;
+  --brown: #5C3D1E;
+  --brown-light: #8B6340;
+  --brown-dark: #3A2410;
+  --gold: #B8892A;
+  --gold-light: #D4A84B;
+  --gold-pale: #F2E0A8;
+  --blue-sacred: #2C4A7A;
+  --blue-light: #4A6FA5;
+  --rose: #C8706A;
+  --text: #2A1A0A;
+  --text-mid: #5C3D1E;
+  --text-light: #8B6340;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--ivory);
+  color: var(--text);
+  font-family: 'EB Garamond', serif;
+  overflow-x: hidden;
+}
+
+/* ===== ANIMATED CANDLES ===== */
+.candle-container {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  pointer-events: none;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 40px;
+}
+
+.candle {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  bottom: 0;
+}
+
+.candle-body {
+  width: 14px;
+  height: 70px;
+  background: linear-gradient(to right, #e8d5b0, #f5e8c8, #e0c898, #f5e8c8);
+  border-radius: 2px 2px 0 0;
+  position: relative;
+}
+
+.candle-body::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 8px;
+  background: linear-gradient(to bottom, #d4b878, #b89040);
+  border-radius: 0 0 2px 2px;
+}
+
+.candle-wick {
+  width: 2px;
+  height: 12px;
+  background: #333;
+  position: relative;
+  z-index: 1;
+}
+
+.candle-flame {
+  position: relative;
+  width: 18px;
+  height: 28px;
+}
+
+.flame-inner {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 10px; height: 20px;
+  background: radial-gradient(ellipse at 50% 80%, #fff8e1, #ffe082, #ffb300);
+  border-radius: 50% 50% 30% 30%;
+  animation: flicker 1.5s ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 8px rgba(255,180,0,0.8)) drop-shadow(0 0 20px rgba(255,120,0,0.4));
+}
+
+.flame-outer {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 18px; height: 28px;
+  background: radial-gradient(ellipse at 50% 80%, rgba(255,200,50,0.3), rgba(255,100,0,0.15), transparent);
+  border-radius: 50% 50% 30% 30%;
+  animation: flicker 1.8s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes flicker {
+  0%   { transform: translateX(-50%) scaleX(1) scaleY(1) rotate(-1deg); }
+  33%  { transform: translateX(-50%) scaleX(0.9) scaleY(1.05) rotate(1deg); }
+  66%  { transform: translateX(-50%) scaleX(1.05) scaleY(0.97) rotate(-0.5deg); }
+  100% { transform: translateX(-50%) scaleX(0.95) scaleY(1.03) rotate(1.5deg); }
+}
+
+/* ===== PARTICLE LIGHT ===== */
+.particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  width: 3px; height: 3px;
+  background: var(--gold-light);
+  border-radius: 50%;
+  opacity: 0;
+  animation: floatUp var(--dur) ease-in var(--delay) infinite;
+}
+
+@keyframes floatUp {
+  0%   { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+  10%  { opacity: 0.6; }
+  80%  { opacity: 0.3; }
+  100% { transform: translateY(-10vh) translateX(var(--drift)) scale(0.5); opacity: 0; }
+}
+
+/* ===== CROSS WATERMARK ===== */
+.cross-watermark {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 0;
+  font-size: 60vw;
+  color: var(--gold);
+  font-family: serif;
+  line-height: 1;
+  user-select: none;
+}
+
+/* ===== PROGRESS ===== */
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--gold), var(--gold-light));
+  z-index: 1000;
+  transition: width 0.1s;
+  box-shadow: 0 0 8px rgba(184,137,42,0.6);
+}
+
+/* ===== ORNAMENTAL BORDER ===== */
+.page-border {
+  position: fixed;
+  inset: 12px;
+  pointer-events: none;
+  z-index: 60;
+  border: 1px solid rgba(184,137,42,0.25);
+}
+
+.page-border::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(184,137,42,0.1);
+}
+
+/* Corner ornaments */
+.corner {
+  position: absolute;
+  width: 30px; height: 30px;
+  border-color: var(--gold);
+  border-style: solid;
+  opacity: 0.5;
+}
+.corner.tl { top: -1px; left: -1px; border-width: 2px 0 0 2px; }
+.corner.tr { top: -1px; right: -1px; border-width: 2px 2px 0 0; }
+.corner.bl { bottom: -1px; left: -1px; border-width: 0 0 2px 2px; }
+.corner.br { bottom: -1px; right: -1px; border-width: 0 2px 2px 0; }
+
+/* ===== HERO ===== */
+#hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 6rem 2rem;
+  position: relative;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 30%, rgba(212,168,75,0.08) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 80% at 20% 80%, rgba(44,74,122,0.05) 0%, transparent 60%),
+    var(--ivory);
+}
+
+.hero-cross {
+  font-size: 3rem;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeDown 1s ease 0.3s forwards;
+  text-shadow: 0 0 30px rgba(184,137,42,0.4);
+  filter: drop-shadow(0 0 15px rgba(184,137,42,0.3));
+}
+
+.hero-eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.5em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  animation: fadeDown 1s ease 0.6s forwards;
+}
+
+.hero-verse {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1rem, 2.5vw, 1.3rem);
+  font-style: italic;
+  color: var(--text-light);
+  margin-bottom: 3rem;
+  max-width: 600px;
+  line-height: 1.8;
+  opacity: 0;
+  animation: fadeDown 1s ease 0.9s forwards;
+  position: relative;
+  padding: 0 2rem;
+}
+
+.hero-verse::before, .hero-verse::after {
+  content: '✦';
+  position: absolute;
+  top: 0;
+  color: var(--gold-pale);
+  font-style: normal;
+  font-size: 1.5rem;
+}
+.hero-verse::before { left: 0; }
+.hero-verse::after  { right: 0; }
+
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 9vw, 7rem);
+  font-weight: 300;
+  line-height: 1.0;
+  color: var(--text);
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeDown 1.2s ease 1.2s forwards;
+  letter-spacing: -0.01em;
+}
+
+.hero-title .script {
+  font-style: italic;
+  color: var(--gold);
+}
+
+.hero-title .thin {
+  font-weight: 300;
+  color: var(--brown-light);
+}
+
+.hero-sub {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--text-mid);
+  max-width: 500px;
+  line-height: 1.9;
+  margin: 1.5rem auto 3rem;
+  opacity: 0;
+  animation: fadeDown 1s ease 1.5s forwards;
+}
+
+.hero-amount-wrap {
+  opacity: 0;
+  animation: fadeDown 1s ease 1.8s forwards;
+  position: relative;
+  display: inline-block;
+}
+
+.hero-amount {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 1rem 3.5rem;
+  position: relative;
+  background: rgba(184,137,42,0.04);
+}
+
+.ornament-top, .ornament-bot {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--gold-pale);
+  letter-spacing: 0.5em;
+  margin: 0.3rem 0;
+}
+
+.scroll-dove {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0;
+  animation: fadeIn 2s ease 2.5s forwards;
+}
+
+.scroll-dove span {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.4em;
+  color: var(--text-light);
+  text-transform: uppercase;
+}
+
+.dove-line {
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: breathe 2s ease infinite;
+}
+
+@keyframes breathe {
+  0%,100% { opacity: 1; transform: scaleY(1); }
+  50% { opacity: 0.4; transform: scaleY(0.6); }
+}
+
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* ===== DIVIDER SACRED ===== */
+.sacred-divider {
+  text-align: center;
+  padding: 1.5rem 0;
+  color: var(--gold);
+  font-size: 1.1rem;
+  letter-spacing: 0.8em;
+  position: relative;
+  z-index: 2;
+}
+
+.sacred-divider::before, .sacred-divider::after {
+  content: '';
+  display: inline-block;
+  width: 80px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold));
+  vertical-align: middle;
+  margin: 0 1.5rem;
+}
+
+.sacred-divider::after {
+  background: linear-gradient(to left, transparent, var(--gold));
+}
+
+/* ===== MAIN CONTENT ===== */
+.content-wrapper {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* ===== LETTER SECTION ===== */
+.letter-section {
+  padding: 6rem 0;
+}
+
+.letter-card {
+  background: var(--ivory-dark);
+  border: 1px solid var(--parchment);
+  border-top: 3px solid var(--gold);
+  padding: 4rem;
+  position: relative;
+  box-shadow: 0 4px 40px rgba(92,61,30,0.08), inset 0 0 60px rgba(232,216,184,0.3);
+}
+
+.letter-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='1' height='1' fill='rgba(184,137,42,0.04)'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+.letter-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.letter-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--gold), transparent);
+  max-width: 100px;
+}
+
+.letter-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 300;
+  line-height: 1.2;
+  margin-bottom: 2rem;
+  color: var(--text);
+}
+
+.letter-title em { color: var(--gold); font-style: italic; }
+
+.letter-body {
+  font-size: 1.1rem;
+  line-height: 2;
+  color: var(--text-mid);
+}
+
+.letter-body p { margin-bottom: 1.5rem; }
+
+.letter-body .blessed {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  font-style: italic;
+  color: var(--text);
+  display: block;
+  text-align: center;
+  padding: 1.5rem;
+  border-left: 3px solid var(--gold);
+  border-right: 3px solid var(--gold);
+  margin: 2rem 0;
+  background: rgba(184,137,42,0.03);
+}
+
+/* ===== VIRTUES GRID ===== */
+.virtues-section { padding: 5rem 0; }
+
+.virtues-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.virtue-card {
+  background: var(--ivory-dark);
+  border: 1px solid var(--parchment);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.virtue-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 0; height: 2px;
+  background: var(--gold);
+  transition: width 0.4s ease;
+}
+
+.virtue-card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(92,61,30,0.1); }
+.virtue-card:hover::after { width: 80%; }
+
+.virtue-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 1.2rem;
+  filter: drop-shadow(0 2px 8px rgba(184,137,42,0.3));
+}
+
+.virtue-name {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+.virtue-text {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  line-height: 1.8;
+  font-style: italic;
+}
+
+/* ===== SCRIPTURE BAND ===== */
+.scripture-band {
+  background: linear-gradient(135deg, var(--blue-sacred) 0%, #1e3560 100%);
+  padding: 5rem 2rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.scripture-band::before {
+  content: '✝';
+  position: absolute;
+  font-size: 30vw;
+  color: rgba(255,255,255,0.03);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: serif;
+  pointer-events: none;
+}
+
+.scripture-band .inner { max-width: 700px; margin: 0 auto; }
+
+.scripture-ref {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
+  color: rgba(212,168,75,0.7);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.scripture-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ivory);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.scripture-sub {
+  font-size: 0.9rem;
+  color: rgba(250,246,238,0.5);
+  letter-spacing: 0.1em;
+}
+
+/* ===== BREAKDOWN ===== */
+.breakdown-section { padding: 6rem 0; }
+
+.breakdown-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 3rem;
+  font-size: 1rem;
+}
+
+.breakdown-table thead tr {
+  border-bottom: 2px solid var(--gold);
+}
+
+.breakdown-table th {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.4em;
+  color: var(--gold);
+  text-transform: uppercase;
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-weight: 400;
+}
+
+.breakdown-table tbody tr {
+  border-bottom: 1px solid var(--parchment);
+  transition: background 0.2s ease;
+}
+
+.breakdown-table tbody tr:hover { background: rgba(184,137,42,0.04); }
+
+.breakdown-table td {
+  padding: 1.25rem 1.5rem;
+  color: var(--text-mid);
+  line-height: 1.6;
+  vertical-align: top;
+}
+
+.breakdown-table td:first-child {
+  font-size: 1.5rem;
+  width: 60px;
+}
+
+.breakdown-table td.amount {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  color: var(--gold);
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.breakdown-table tfoot tr {
+  border-top: 2px solid var(--gold);
+  background: rgba(184,137,42,0.05);
+}
+
+.breakdown-table tfoot td {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--text);
+  text-transform: uppercase;
+  padding: 1.5rem;
+}
+
+.breakdown-table tfoot td.total-amount {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  color: var(--gold);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* ===== PROMISE SECTION ===== */
+.promise-section {
+  padding: 5rem 0 6rem;
+  text-align: center;
+}
+
+.promise-box {
+  border: 1px solid var(--gold);
+  padding: 4rem;
+  position: relative;
+  background: radial-gradient(ellipse at center, rgba(184,137,42,0.04), transparent);
+}
+
+.promise-cross {
+  font-size: 2.5rem;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 20px rgba(184,137,42,0.4);
+}
+
+.promise-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 300;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+}
+
+.promise-title em { color: var(--gold); font-style: italic; }
+
+.promise-body {
+  font-size: 1.05rem;
+  color: var(--text-mid);
+  line-height: 2;
+  max-width: 600px;
+  margin: 0 auto 3rem;
+}
+
+.prayer-box {
+  background: var(--blue-sacred);
+  padding: 2.5rem 3rem;
+  margin: 2rem 0;
+  position: relative;
+}
+
+.prayer-box::before {
+  content: '🙏';
+  position: absolute;
+  top: -1rem; left: 50%; transform: translateX(-50%);
+  font-size: 1.5rem;
+  background: var(--ivory);
+  padding: 0 0.5rem;
+}
+
+.prayer-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--ivory);
+  line-height: 1.8;
+}
+
+/* ===== AMOUNT FINAL ===== */
+.final-ask {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.final-amount {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(3rem, 8vw, 6rem);
+  color: var(--gold);
+  display: block;
+  line-height: 1;
+  text-shadow: 0 0 40px rgba(184,137,42,0.3);
+  margin: 1rem 0;
+}
+
+.final-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
+  color: var(--text-light);
+  text-transform: uppercase;
+}
+
+.signature {
+  margin-top: 4rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  font-style: italic;
+  color: var(--text-mid);
+  line-height: 2;
+}
+
+.signature strong {
+  display: block;
+  font-size: 1.6rem;
+  color: var(--text);
+  font-weight: 400;
+  margin-top: 0.5rem;
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--ivory-dark);
+  border-top: 1px solid var(--parchment);
+  padding: 3rem 2rem;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.footer-cross {
+  font-size: 1.5rem;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.footer-text {
+  font-family: 'Cinzel', serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.4em;
+  color: var(--text-light);
+  text-transform: uppercase;
+  line-height: 2;
+}
+
+/* ===== REVEAL ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 700px) {
+  .virtues-grid { grid-template-columns: 1fr; }
+  .letter-card { padding: 2rem; }
+  .promise-box { padding: 2rem; }
+  .prayer-box { padding: 1.5rem 2rem; }
+  .candle-container { padding: 0 15px; }
+  .candle-body { width: 10px; height: 50px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Decorative elements -->
+<div class="progress-bar" id="progressBar"></div>
+<div class="cross-watermark">✝</div>
+
+<div class="page-border">
+  <div class="corner tl"></div>
+  <div class="corner tr"></div>
+  <div class="corner bl"></div>
+  <div class="corner br"></div>
+</div>
+
+<!-- Floating particles -->
+<div class="particles" id="particles"></div>
+
+<!-- Candles at bottom -->
+<div class="candle-container">
+  <div class="candle">
+    <div class="candle-flame"><div class="flame-outer"></div><div class="flame-inner"></div></div>
+    <div class="candle-wick"></div>
+    <div class="candle-body"></div>
+  </div>
+  <div class="candle">
+    <div class="candle-flame"><div class="flame-outer"></div><div class="flame-inner" style="animation-delay:0.3s"></div></div>
+    <div class="candle-wick"></div>
+    <div class="candle-body"></div>
+  </div>
+  <div class="candle">
+    <div class="candle-flame"><div class="flame-outer"></div><div class="flame-inner" style="animation-delay:0.7s"></div></div>
+    <div class="candle-wick"></div>
+    <div class="candle-body"></div>
+  </div>
+  <div class="candle">
+    <div class="candle-flame"><div class="flame-outer"></div><div class="flame-inner" style="animation-delay:0.5s"></div></div>
+    <div class="candle-wick"></div>
+    <div class="candle-body"></div>
+  </div>
+  <div class="candle">
+    <div class="candle-flame"><div class="flame-outer"></div><div class="flame-inner" style="animation-delay:0.2s"></div></div>
+    <div class="candle-wick"></div>
+    <div class="candle-body"></div>
+  </div>
+</div>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <div class="hero-cross">✝</div>
+  <div class="hero-eyebrow">Una Petición del Corazón · Con la Gracia de Dios</div>
+
+  <div class="hero-verse">
+    "Todo lo que pidiereis en mi nombre, lo haré, para que el Padre sea glorificado en el Hijo."
+    <br><small style="font-size:0.75em; letter-spacing:0.2em;">— Juan 14:13</small>
+  </div>
+
+  <h1 class="hero-title">
+    Abuelita,<br>
+    <span class="script">usted es</span><br>
+    <span class="thin">mi milagro.</span>
+  </h1>
+
+  <p class="hero-sub">
+    En este camino que Dios me ha dado de estudiar y crecer, siempre ha estado su amor como guía. Hoy vengo a pedirle algo con el corazón en la mano.
+  </p>
+
+  <div class="hero-amount-wrap">
+    <div class="ornament-top">· · ✦ · ·</div>
+    <div class="hero-amount">$ 40.000 COP</div>
+    <div class="ornament-bot">· · ✦ · ·</div>
+  </div>
+
+  <div class="scroll-dove">
+    <span>Continuar</span>
+    <div class="dove-line"></div>
+  </div>
+</section>
+
+<div class="sacred-divider">✦ ✝ ✦</div>
+
+<!-- ===== LETTER ===== -->
+<div class="content-wrapper">
+  <div class="letter-section">
+    <div class="letter-card reveal">
+      <div class="letter-label">01 — La Carta</div>
+      <h2 class="letter-title">Mi querida abuelita,<br><em>le escribo con el alma.</em></h2>
+      <div class="letter-body">
+        <p>Usted que siempre me ha enseñado que Dios provee, que la fe mueve montañas, y que en familia nadie camina solo — hoy me acerco a usted no solo como su nieto, sino como alguien que necesita su ayuda para honrar el regalo que Él me dio: la capacidad de estudiar.</p>
+
+        <span class="blessed">
+          "La educación es el arma más poderosa que puedes usar para cambiar el mundo."<br>
+          <small style="font-size:0.75em; opacity:0.7;">— y usted siempre supo eso antes que nadie.</small>
+        </span>
+
+        <p>Este trabajo de la universidad — Razonamiento Cuantitativo — no es solo una tarea. Es una prueba que Dios pone en mi camino para demostrar que el esfuerzo y la preparación dan frutos. Pero como dicen las Escrituras, la siembra necesita agua para crecer.</p>
+
+        <p>Abuelita, su apoyo de <strong style="color:var(--gold);">$40.000</strong> sería esa agua. No es un gasto — es una semilla plantada en tierra fértil, y Él que todo lo ve, ya sabe el bien que viene de ello.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== VIRTUES ===== -->
+<div class="content-wrapper">
+  <div class="virtues-section">
+    <div class="section-label reveal" style="font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.5em; color:var(--gold); text-transform:uppercase; margin-bottom:1rem;">02 — Por Qué Vale</div>
+    <h2 class="reveal" style="font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,4vw,3rem); font-weight:300;">Tres razones que<br><em style="color:var(--gold);">Dios bendice.</em></h2>
+
+    <div class="virtues-grid reveal">
+      <div class="virtue-card">
+        <span class="virtue-icon">🙏</span>
+        <div class="virtue-name">Fe en Acción</div>
+        <div class="virtue-text">Creer sin obras es fe muerta. Su apoyo es fe viva que camina y produce frutos académicos.</div>
+      </div>
+      <div class="virtue-card">
+        <span class="virtue-icon">📖</span>
+        <div class="virtue-name">Sabiduría</div>
+        <div class="virtue-text">Proverbios 4:7 dice: "Lo principal es la sabiduría." Usted invertirá en exactamente eso.</div>
+      </div>
+      <div class="virtue-card">
+        <span class="virtue-icon">❤️</span>
+        <div class="virtue-name">Amor Familiar</div>
+        <div class="virtue-text">El amor de abuela es el más puro que existe. Y el mío hacia usted, eterno e incondicional.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SCRIPTURE BAND ===== -->
+<div class="scripture-band">
+  <div class="inner reveal">
+    <div class="scripture-ref">Filipenses 4:19</div>
+    <div class="scripture-text">
+      "Mi Dios, pues, suplirá todo lo que os falta conforme a sus riquezas en gloria en Cristo Jesús."
+    </div>
+    <div class="scripture-sub">Y hoy, abuelita, usted es el instrumento de esa provisión.</div>
+  </div>
+</div>
+
+<!-- ===== BREAKDOWN ===== -->
+<div class="content-wrapper">
+  <div class="breakdown-section">
+    <div class="section-label reveal" style="font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.5em; color:var(--gold); text-transform:uppercase; margin-bottom:1rem;">03 — El Destino</div>
+    <h2 class="reveal" style="font-family:'Cormorant Garamond',serif; font-size:clamp(1.8rem,4vw,3rem); font-weight:300; margin-bottom:0.5rem;">Cada peso,<br><em style="color:var(--gold);">una bendición con propósito.</em></h2>
+
+    <table class="breakdown-table reveal">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Destino</th>
+          <th>Propósito</th>
+          <th>Monto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>✦</td>
+          <td><strong>Recursos Académicos</strong><br><small style="color:var(--text-light);">Libros, artículos y bases de datos</small></td>
+          <td style="font-style:italic; color:var(--text-light);">Como quien busca en las Escrituras, hay que buscar en las fuentes correctas.</td>
+          <td class="amount">$15.000</td>
+        </tr>
+        <tr>
+          <td>✦</td>
+          <td><strong>Herramientas de Análisis</strong><br><small style="color:var(--text-light);">Software especializado</small></td>
+          <td style="font-style:italic; color:var(--text-light);">El artesano necesita sus herramientas para hacer la obra de Dios bien hecha.</td>
+          <td class="amount">$12.000</td>
+        </tr>
+        <tr>
+          <td>✦</td>
+          <td><strong>Impresión y Presentación</strong><br><small style="color:var(--text-light);">Un trabajo impecable, como usted me enseñó</small></td>
+          <td style="font-style:italic; color:var(--text-light);">La presentación honra el trabajo. Y el trabajo honra a la familia.</td>
+          <td class="amount">$8.000</td>
+        </tr>
+        <tr>
+          <td>✦</td>
+          <td><strong>Provisión de Emergencia</strong><br><small style="color:var(--text-light);">Para lo que Dios disponga</small></td>
+          <td style="font-style:italic; color:var(--text-light);">Como siempre enseñó: "Es mejor tener y no necesitar."</td>
+          <td class="amount">$5.000</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td></td>
+          <td colspan="2">Total de la Petición</td>
+          <td class="total-amount">$40.000</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+
+<!-- ===== PROMISE ===== -->
+<div class="content-wrapper">
+  <div class="promise-section">
+    <div class="promise-box reveal">
+      <span class="promise-cross">✝</span>
+      <h2 class="promise-title">Mi promesa,<br><em>ante Dios y ante usted.</em></h2>
+      <p class="promise-body">
+        Abuelita, si usted me apoya con estos $40.000, le juro — con la misma fe que me enseñó desde niño — que este trabajo será hecho con dedicación, honestidad y el nombre de nuestra familia en alto.
+      </p>
+
+      <div class="prayer-box">
+        <div class="prayer-text">
+          "Señor, bendice las manos de mi abuelita que tanto han dado,<br>
+          y este trabajo que ella hace posible con su amor.<br>
+          Que el fruto de su generosidad se vea en cada nota,<br>
+          y que su corazón sienta el orgullo de haberme ayudado.<br>
+          <em>Amén.</em>"
+        </div>
+      </div>
+
+      <div class="final-ask">
+        <div class="final-label">La Petición Final</div>
+        <span class="final-amount">$40.000</span>
+        <div class="final-label">Pesos Colombianos · Un Único Pago</div>
+      </div>
+
+      <div class="signature">
+        Con todo el amor del mundo,<br>su nieto que la adora,
+        <strong>— Su Nieto/a ✝</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <span class="footer-cross">✝</span>
+  <div class="footer-text">
+    "Dad, y se os dará" — Lucas 6:38<br>
+    Hecho con amor filial y mucha fe · 2025
+  </div>
+</footer>
+
+<script>
+// Progress bar
+const progressBar = document.getElementById('progressBar');
+window.addEventListener('scroll', () => {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = (scrollTop / docHeight * 100) + '%';
+});
+
+// Reveal on scroll
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 100);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+
+// Gold floating particles
+const container = document.getElementById('particles');
+for (let i = 0; i < 30; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  const left = Math.random() * 100;
+  const dur = 8 + Math.random() * 12;
+  const delay = Math.random() * 15;
+  const drift = (Math.random() - 0.5) * 100 + 'px';
+  p.style.cssText = `left:${left}%;--dur:${dur}s;--delay:${delay}s;--drift:${drift};width:${2+Math.random()*3}px;height:${2+Math.random()*3}px;`;
+  container.appendChild(p);
+}
+
+// Parallax on hero cross watermark
+window.addEventListener('scroll', () => {
+  const wm = document.querySelector('.cross-watermark');
+  if (wm) wm.style.transform = `translate(-50%, calc(-50% + ${window.scrollY * 0.2}px))`;
+});
+</script>
+</body>
+</html>
